@@ -4,9 +4,11 @@ import joblob.springrest.springrestdemo.model.Role;
 import joblob.springrest.springrestdemo.model.User;
 import joblob.springrest.springrestdemo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
+@Service
 public class UserServiceImpl implements UserService{
 
     @Autowired

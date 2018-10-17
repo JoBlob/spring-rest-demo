@@ -12,21 +12,24 @@ import java.util.Set;
 public class User {
 
     @Id
-    @Column(name = "userName")
-    private String userName;
+    @Column(name = "username")
+    private String username;
 
     @Column(name = "password")
     private String password;
+
+    @Column(name="enabled")
+    private Boolean enabled;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER)
     private Set<Role> roles;
 
     public String getUserName() {
-        return userName;
+        return username;
     }
 
     public void setUserName(String userName) {
-        this.userName = userName;
+        this.username = userName;
     }
 
     public String getPassword() {
@@ -43,6 +46,14 @@ public class User {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 
     @JsonIgnore

@@ -1,5 +1,7 @@
 package joblob.springrest.springrestdemo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -8,6 +10,7 @@ public class Role extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "username")
+    @JsonIgnore
     private User user;
 
     @Column(name="role")
