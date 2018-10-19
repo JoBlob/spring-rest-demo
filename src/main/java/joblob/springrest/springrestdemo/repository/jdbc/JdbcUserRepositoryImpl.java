@@ -30,6 +30,20 @@ public class JdbcUserRepositoryImpl implements UserRepository {
         this.insertUser = new SimpleJdbcInsert(dataSource).withTableName("users");
     }
 
+    @Override
+    public void save(User user) throws DataAccessException {
+        BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(user);
+        try{
+            getByUsername(user.getUsername());
+            this.namedParameterJdbcTemplate.update("UPDATE users SET password=:password, enabled=:enabled WHERE username=:username", parameterSource);
+        }catch (EmptyResultDataAccessException e) {
+            this.insertUser.execute(parameterSource);
+        } finally {
+            updateUserRoles(user);
+        }
+
+    }
+
     private User getByUsername(String username) {
         Map<String, Object> params = new HashMap<>();
         params.put("username", username);
@@ -38,7 +52,7 @@ public class JdbcUserRepositoryImpl implements UserRepository {
 
     private void updateUserRoles(User user) {
         Map<String, Object> params = new HashMap<>();
-        params.put("username", user.getUserName());
+        params.put("username", user.getUsername());
         this.namedParameterJdbcTemplate.update("DELETE FROM roles WHERE username=:username", params);
         for (Role role : user.getRoles()){
             params.put("role", role.getName());
@@ -48,17 +62,4 @@ public class JdbcUserRepositoryImpl implements UserRepository {
         }
     }
 
-    @Override
-    public void save(User user) throws DataAccessException {
-        BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(user);
-        try{
-            getByUsername(user.getUserName());
-            this.namedParameterJdbcTemplate.update("UPDATE users SET password=:password, enabled=:enabled WHERE username=:username", parameterSource);
-        }catch (EmptyResultDataAccessException e) {
-            this.insertUser.execute(parameterSource);
-        } finally {
-            updateUserRoles(user);
-        }
-
-    }
 }
